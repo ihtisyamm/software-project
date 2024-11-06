@@ -1,0 +1,27 @@
+{% extends "user_layout.html" %}
+{% block content %}
+<div class="flex-grow bg-light">
+    <div class="flex flex-col items-center max-w-4xl mx-auto">
+        <div class="pt-10">
+            <h1 class="text-4xl font-bold"> Upload File </h1>
+        </div>
+        <div class="pt-10 text-center">
+            <p class="text-3xl">{{ user.user.user_metadata["username"]}}</p>
+            <p class="pt-2 text-xl font-light">{{ user.user.email }}</p>
+        </div>
+        <div class="pt-5">
+        </div>
+        <div class="flex flex-col upload-button">
+            <form method = 'POST' enctype='multipart/form-data' action='/api/upload'>
+                <div class="pt-5 text-center">
+                    {{form.hidden_tag()}}
+                    <div class="pb-3">
+                        <input type="file" name="file" accept=".gpx">   
+                    </div>
+                    <button class="bg-[#de5499] px-4 py-2 text-white rounded-lg" href="/"> Upload GPX files </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

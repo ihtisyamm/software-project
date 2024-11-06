@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="flex-grow bg-light">
+    {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+            <div class="fixed w-full max-w-md px-4 transform -translate-x-1/2 top-20 left-1/2">
+                {% for category, message in messages %}
+                    {% if category == 'login_error' %}
+                        <div class="alert {{ category }} flash-message bg-white rounded-lg border-gray-300 border px-4 py-3 shadow-lg">
+                            {{ message }}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+    <script>
+        sessionStorage.clear();
+        document.addEventListener('DOMContentLoaded', function() {
+            const alerts = document.querySelectorAll('.flash-message');
+            if (alerts.length) {
+                setTimeout(() => {
+                    alerts.forEach(alert => {
+                        alert.style.transition = 'opacity 0.5s ease-out';
+                        alert.style.opacity = '0';
+                        setTimeout(() => alert.style.display = 'none', 500);
+                    });
+                }, 2000); // Starts fading out after 2 seconds
+            }
+        });
+    </script>
+    <div class="container flex flex-col items-center py-10 mx-auto">
+        <div class="text-center bg-white w-80 rounded-xl">
+            <h1 class="p-3 text-3xl font-medium text-black">Login</h1>
+            <form class="px-3 pt-3" method="POST">
+                {{ form.hidden_tag() }}
+                <input type="text" name="email" class="container px-3 mt-5 border-2 border-gray-300 rounded-lg" placeholder="email">
+                <input type="password" name="password" class="container px-3 mt-5 border-2 border-gray-300 rounded-lg" placeholder="password">
+                <button class="container px-6 py-2 my-5 text-white bg-[#de5499] rounded-lg">Login</button>
+            </form>
+            <p class="pb-3 text-sm font-light">Don't have an account? <a class="underline hover:italic" href="/signup">Signup</a></p>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+

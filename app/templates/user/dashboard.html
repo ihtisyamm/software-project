@@ -1,0 +1,92 @@
+{% extends "user_layout.html"%}
+{% block content %}
+
+<!-- Include Leaflet.js library -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""></script>
+
+<script>
+    sessionStorage.clear();
+    document.addEventListener("DOMContentLoaded", function() {
+        // For each map container
+        var mapContainers = document.querySelectorAll('[data-coordinates]');
+        mapContainers.forEach(function(container) {
+
+            // Retrieve coordinates data from data attribute
+            var coordinates = JSON.parse(container.dataset.coordinates);
+
+            var map = L.map(container.id).setView([51.505, -0.09], 13);
+            L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            }).addTo(map);
+                    
+            var polyline = L.polyline(coordinates, {color: 'red', opacity: '0.7'}).addTo(map);
+            map.fitBounds(polyline.getBounds());
+        });
+    });
+</script>
+
+<div class="flex-grow p-10 bg-light">
+    <div class="flex flex-col items-center max-w-4xl mx-auto">
+        <div class="pt-10">
+            <h1 class="text-4xl font-bold"> Your Dashboard </h1>
+        </div>
+        <div class="flex flex-row gap-4 pt-10">
+            <div class="px-10">
+                <p class="text-3xl">{{ user.user.user_metadata["username"]}}</p>
+                <p class="pt-2 text-xl font-light">{{ user.user.email }}</p>
+                <a class="pt-2 text-sm underline" href="{{ url_for('logout') }}"> logout </a>
+            </div>
+            <div class="flex flex-col items-end px-10">
+                <p class="pt-2"> {{subscription[1]}} subscription</p>
+                <p> Renew date: {{subscription[2]}}</p>
+                <a class="text-sm underline" href="/pricing"> change </a>
+                <a class="text-sm underline" href="/user/confirmation"> unsubscribe </a>
+            </div>
+        </div>
+        
+        {% if subscription[0] == True %}
+            <div class="pt-5">
+                <a class="bg-[#de5499] px-5 py-2 text-white rounded-lg" href="/upload"> Upload GPX files </a>
+            </div>
+        {% else %}
+        <div class="pt-5">
+            <a class="bg-[#de5499] px-5 py-2 text-white rounded-lg" href="/pricing"> Subscribe </a>
+        </div>
+        {% endif %}
+        <h2 class="pt-20 text-xl underline"> Uploaded Files </h2>
+        {% if not coordinates %}
+            <p class="mt-5 text-xl text-center"> You have no files! Upload your first file. </p>
+        {% endif %}
+    </div>
+
+    {% if coordinates %}
+    <div class="flex flex-wrap justify-center">
+        <!-- For each set of map coordinates -->
+        {% for coord_set in coordinates %}
+        <div class="w-full p-5 mx-auto md:w-1/2 lg:w-1/2 xl:w-1/2">
+            <div class="flex flex-row justify-between">
+                <div>
+                    <p> {{ coord_set[1][:-4] }}</p>
+                </div>
+                <div class="flex flex-row items-center text-sm">
+                    <a class="mx-2 underline" href="{{ url_for('view', id=coord_set[0]) }}">view</a>
+                    <a class="mx-2 underline" href="{{ url_for('download', id=coord_set[0]) }}"download>download</a>
+                    <a class="mx-2 underline" href="/">delete</a>
+                </div>
+            </div>
+            <div class="overflow-hidden bg-white rounded-lg shadow-md">
+                <!-- Create a div for the map -->
+                <div id="map_{{ loop.index }}" class="h-96" data-coordinates="{{ coord_set[2]|tojson }}"></div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+</div>
+{% endblock content %}

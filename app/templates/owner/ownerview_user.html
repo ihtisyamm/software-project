@@ -1,0 +1,154 @@
+{% extends "owner_layout.html" %} {% block content %}
+<div class="flex-grow p-10 bg-light">
+  <div class="max-w-4xl mx-auto">
+    <div class="pt-10">
+      <h1 class="text-3xl font-bold text-center">Revenue Data</h1>
+    </div>
+    <div class="pt-10">
+      <div class="content-wrapper">
+        <div class="graph-frame">
+          <canvas
+            id="revenueChart"
+            style="width: 800px; height: 400px"
+          ></canvas>
+        </div>
+      </div>
+
+      <style>
+        body {
+          background-color: #eddcd9;
+          margin: 0;
+          padding: 0;
+        }
+
+        .content-wrapper {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
+        .graph-frame {
+          max-width: 800px;
+          padding: 20px;
+          background-color: #eddcd9;
+          border: 2px solid black;
+        }
+      </style>
+
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      <script>
+        var labelsData = JSON.parse("{{ labels|safe }}");
+        var valuesData = JSON.parse("{{ values|safe }}");
+
+        var ctx = document.getElementById("revenueChart").getContext("2d");
+        var chart = new Chart(ctx, {
+          type: "line",
+          data: {
+            labels: labelsData,
+            datasets: [
+              {
+                label: "Revenue",
+                data: valuesData,
+                backgroundColor: "#de5499",
+                borderColor: "#de5499",
+                borderWidth: 1,
+                onClick: false,
+                animation: false,
+              },
+            ],
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true,
+                title: {
+                  display: true,
+                  text: "Revenue",
+                },
+              },
+              x: {
+                title: {
+                  display: true,
+                  text: "Week",
+                },
+              },
+            },
+          },
+        });
+      </script>
+    </div>
+
+    <div class="flex justify-between pt-10">
+      <div>
+        <table class="table p-2 border-2 border-black">
+          <tr class="text-xs bg-[#d3c3c0]">
+            <th class="p-3 text-left border-t-2 border-black">Week</th>
+            <th class="p-3 text-center border-t-2 border-black">
+              Weekly Revenue
+            </th>
+            <th class="p-3 text-center border-t-2 border-black">Total Users</th>
+            <th class="p-3 text-center border-t-2 border-black">
+              Subscribed Users
+            </th>
+          </tr>
+          {% for week, weekly_revenue in revenue_data.items() %}
+          <tr>
+            <td class="p-3 text-left border-t-2 border-black">
+              {{ week.strftime('%Y-%m-%d') }}
+            </td>
+            <td class="p-3 text-center border-t-2 border-black">
+              {{ weekly_revenue | round(2) }}
+            </td>
+            <td class="p-3 text-center border-t-2 border-black">
+              {{ total_users }}
+            </td>
+            <td class="p-3 text-center border-t-2 border-black">
+              {{ subscribed_users }}
+            </td>
+          </tr>
+          {% endfor %}
+        </table>
+      </div>
+      <div>
+        <table class="table p-2 border-2 border-black">
+          <tr class="text-xs bg-[#d3c3c0]">
+            <th class="p-3 text-left border-t-2 border-black">Month</th>
+            <th class="p-3 text-right border-t-2 border-black">
+              Monthly Revenue
+            </th>
+          </tr>
+          {% for month, revenue in monthly_revenue.items() %}
+          <tr>
+            <td class="p-3 text-left border-t-2 border-black">
+              {{ months[month-1] }}
+            </td>
+            <td class="p-3 text-right border-t-2 border-black">
+              {{ revenue | round(2) }}
+            </td>
+          </tr>
+          {% endfor %}
+        </table>
+      </div>
+
+      <div>
+        <table class="table p-2 border-2 border-black">
+          <tr class="text-xs bg-[#d3c3c0]">
+            <th class="p-3 text-left border-t-2 border-black">Year</th>
+            <th class="p-3 text-right border-t-2 border-black">
+              Yearly Revenue
+            </th>
+          </tr>
+          <tr>
+            <td class="p-3 text-left border-t-2 border-black">
+              {{ current_year }}
+            </td>
+            <td class="p-3 text-right border-t-2 border-black">
+              {{ yearly_revenue | round(2) }}
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

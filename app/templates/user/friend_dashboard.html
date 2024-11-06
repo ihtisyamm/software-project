@@ -1,0 +1,27 @@
+{% extends "user_layout.html" %}
+{% block content %}
+<div class="flex-grow bg-light">
+    <div class="flex flex-col items-center max-w-4xl py-10 mx-auto">
+        <h1 class="text-3xl font-bold">{{ friend.username }}'s Maps</h1>
+        <h2 class="py-5 text-xl">Uploaded Files</h2>
+        <div>
+            {% if files %}
+                <table class="p-2 mx-auto border-2 border-gray-400 table-fixed bg-light">
+                    <tr class="text-xs text-left bg-gray-400">
+                        <th class="p-2 border-t-2 border-gray-400">Maps</th>
+                        <th class="pl-2 border-t-2 border-gray-400"> </th>
+                    </tr>
+                        {% for file in files %}
+                    <tr>
+                        <td class="p-2 text-left border-b-2 border-gray-400">{{ file['filename'][:-4] }}</td>
+                        <td class="p-2 text-xs text-left underline border-b-2 border-gray-400"> <a href="{{ url_for('view', id=file['file_id'] )}}">view</a></td>
+                    </tr>
+                        {% endfor %}
+                </table>
+            {% else %}
+                    <p> No files uploaded! </p>
+            {% endif %}
+        </div> 
+    </div>
+</div>
+{% endblock content %}

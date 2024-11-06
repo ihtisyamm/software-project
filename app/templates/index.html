@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="flex-grow bg-light">
+    <div class="flex justify-between max-w-5xl pt-5 mx-auto lg:max-w-4xl md:max-w-3xl sm:max-w-xl">
+        <div class="max-w-2xl pt-20">
+            <div>
+                <h1 class="text-2xl font-bold"> Share Your Trails, Connect Your Adventures: </h1>
+                <h1 class="text-2xl font-bold"> Explore Together with RouteRush! </h1>
+            </div>
+            <div class="pt-7">
+                <p> Embark on your next adventure and connect with friends by exploring and
+                    uploading GPX files with ease.
+                </p>
+            </div>
+            <div class="pt-10">
+                <a class="text-white bg-[#de5499] px-6 py-2 rounded-lg" href="/signup"> Get Started </a>
+            </div>
+        </div>
+        <div class="pt-20">
+            <img src="../static/images/map.png" alt="Three markers logo" width="200">
+        </div>
+    </div>
+    <div class="flex flex-col items-center max-w-3xl py-10 mx-auto">
+        <div class="flex flex-row gap-40 pt-40 lg:max-w-3xl md:max-w-2xl sm:max-w-xl">
+            <div class="flex flex-row max-w-3xl py-10 mx-auto">
+                <div class="overflow-hidden border-2 border-gray-400 rounded-lg rounded-2xl">
+                    <img src="../static/images/dashboard.png" alt="Dashboard of a page" width="1800">
+                </div>
+                <ul class="px-5 pt-10 text-start">
+                    <li> Unlock the power of seamless navigation with your personalized mapping dashboard. Explore new routes, manage your subscription, and let your adventure unfold with uploaded GPX files tailored to your wanderlust. </li>
+                </ul>
+            </div>
+        </div>
+            <div class="flex flex-row-reverse max-w-3xl py-10 mx-auto">
+                <div class="overflow-hidden border-2 border-gray-400 rounded-lg rounded-2xl">
+                    <img src="../static/images/friend.png" alt="Add and view friends page" width="2000">
+                </div>
+                <ul class="px-5 pt-5 text-start">
+                    <li> Forge meaningful connections effortlessly. The sleek "Add Friend" interface allows you to expand your circle with just a few taps, opening doors to shared experiences and lasting bonds. </li>
+                </ul>
+            </div>
+            <div class="flex flex-row max-w-3xl py-10 mx-auto">
+                <div class="overflow-hidden border-2 border-gray-400 rounded-lg rounded-2xl">
+                    <img src="../static/images/upload.png" alt="Upload page" width="2000">
+                </div>
+                <ul class="px-5 pt-3 text-start">
+                    <li> Elevate your adventures with a streamlined file upload experience. Seamlessly import your GPX files and embark on extraordinary journeys, guided by the app's intuitive mapping capabilities. </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

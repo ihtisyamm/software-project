@@ -1,0 +1,23 @@
+{% extends "user_layout.html" %}
+{% block content %}
+
+<!-- Include Leaflet.js library -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""></script>
+
+
+<div class="flex-grow bg-[#eddcd9] p-10">
+  <div class="flex flex-col items-start max-w-4xl mx-auto">
+    <div class="pt-10">
+      <h1 class="text-4xl font-bold"> Sorry to See You Go :( </h1>
+      <div class="pt-10 text-left">
+        <p class="text-2xl"> We're sorry to see you go. Your subscription has been canceled. If you changed your mind or have any questions, feel free to reach out to our support team. We're here to help! </p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

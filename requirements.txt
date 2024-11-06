@@ -1,0 +1,9 @@
+flask
+flask-login
+flask-wtf
+gpxpy
+supabase
+storage3
+stripe
+python-dotenv
+email_validator

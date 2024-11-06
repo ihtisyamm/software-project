@@ -1,0 +1,115 @@
+{% extends "user_layout.html" %}
+{% block content %}
+<div class="flex-grow bg-light">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""></script>
+
+    <div>
+        <h1 class="py-10 text-3xl text-center">Route View</h1>
+    </div>
+    <div id="map" class="w-full mx-auto border-2 border-gray-400 rounded-lg h-96">
+        <script src="../../static/scripts/maps/session_data.js"></script>
+
+        <script>
+            if (sessionStorage.length != 0) {
+                var filename_str = sessionStorage.getItem('filename').split(",");
+                if (filename_str.includes('{{ curr_file["filename"][:-4] }}') == false) {
+                    addItems('coordinates', '{{ curr_file["pointsdata"]|tojson|safe }}');
+                } 
+            } else {
+                addItems('coordinates', '{{ curr_file["pointsdata"]|tojson|safe }}');
+            }
+            // set map container (ungku)
+            var map = L.map('map', {
+                zoom: 13
+            });
+
+            L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+                maxZoom: 20,
+            }).addTo(map);
+            var bounds = L.latLngBounds();
+
+            // retrieve and create routes (ungku)
+            var coordinates = sessionStorage.getItem('coordinates');
+            var coordinatesArr = JSON.parse('[' + coordinates + ']');
+            console.log(coordinatesArr.length);
+
+            colours = ["red", "blue", "green", "yellow", "purple", "orange", "black"]
+
+            if (sessionStorage.length == 1) {
+                addOthers('colours', colours[coordinatesArr.length-1]);
+                addOthers('filename', '{{ curr_file["filename"][:-4] }}') 
+            } else {
+                var filename_str = sessionStorage.getItem('filename').split(",");
+                if (filename_str.includes('{{ curr_file["filename"][:-4] }}') == false) {
+                    addOthers('colours', colours[coordinatesArr.length-1]);
+                    addOthers('filename', '{{ curr_file["filename"][:-4] }}') 
+                } 
+            }
+
+            for (var i = 0; i < coordinatesArr.length; i++) {
+                var polyline = L.polyline(coordinatesArr[i], {color: colours[i], opacity: '0.8'}).addTo(map);
+                bounds.extend(polyline.getBounds());
+            }
+
+            var bounds = L.latLngBounds();
+            for (var i = 0; i < coordinatesArr.length; i++) {
+                bounds.extend(coordinatesArr[i]);
+            }
+            map.fitBounds(bounds);
+
+            console.log(sessionStorage.getItem('filename').split(","));
+            console.log(sessionStorage.getItem('colours').split(","));
+
+            var legend = L.control({ position: "topright" });
+
+            var filenames = sessionStorage.getItem('filename').split(",");
+
+            legend.onAdd = function(map) {
+                var div = L.DomUtil.create("div", "legend");
+                div.classList.add("bg-gray-100", "p-2", "rounded-lg", "border-2", "border-gray-400");
+                div.innerHTML += "<h4 class='font-bold underline'>Route</h4>";
+
+                for (var i = 0; i < filenames.length; i++) {
+                    var legendEntry = L.DomUtil.create("div", "legend-entry");
+                    legendEntry.innerHTML += "<div style='display:inline-block;width:10px;height:10px;background-color:" + colours[i] + ";border-radius:50%;margin-right:5px'></div>";
+                    legendEntry.innerHTML += "<div style='display:inline'>" + filenames[i].split(".")[0] + "</div>";
+                    div.appendChild(legendEntry);
+                }
+
+                return div;
+            };
+            legend.addTo(map);
+        </script>
+    </div>
+    <div>
+        <h1 class="pt-10 text-xl font-bold text-center"> Other Maps </h1>
+        <div class="pt-5">
+            {% if files|length != 0 %}
+            <table class="p-2 mx-auto border-2 border-gray-400 table-fixed bg-light">
+                <tr class="text-xs text-left">
+                    <th class="p-2 border-t-2 border-gray-400">+</th>
+                    <th class="p-2 border-t-2 border-gray-400">Maps</th>
+                    <th class="pl-2 border-t-2 border-gray-400">Actions</th>
+                    <th class="p-2 border-t-2 border-gray-400"></th>
+                </tr>
+                    {% for file in files %}
+                    <tr>
+                        <td class="p-2 text-center border-b-2 border-gray-400"></td>
+                        <td class="p-2 text-left border-b-2 border-gray-400">{{ file['filename'][:-4] }}</td>
+                        <td class="pl-2 text-xs text-left underline border-b-2 border-gray-400"> <a href="{{ url_for('view', id=file['file_id'] )}}">view</a></td>
+                        <td class="p-2 text-xs text-left underline border-b-2 border-gray-400"> <a href="/">delete</a></td>
+                    </tr>
+                    {% endfor %}
+            </table>
+            {% else %}
+                    <p> No files uploaded! </p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock content %}

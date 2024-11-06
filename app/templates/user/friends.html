@@ -1,0 +1,61 @@
+{% extends "user_layout.html" %}
+{% block content %}
+<div class="flex-grow bg-light">
+    {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+            <div class="fixed w-full max-w-md px-4 transform -translate-x-1/2 top-20 left-1/2">
+                {% for category, message in messages %}
+                    {% if category == 'friend_error' %}
+                        <div class="alert {{ category }} flash-message bg-white rounded-lg border-gray-300 border px-4 py-3 shadow-lg">
+                            {{ message }}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+    <script>
+        sessionStorage.clear();
+        document.addEventListener('DOMContentLoaded', function() {
+            const alerts = document.querySelectorAll('.flash-message');
+            if (alerts.length) {
+                setTimeout(() => {
+                    alerts.forEach(alert => {
+                        alert.style.transition = 'opacity 0.5s ease-out';
+                        alert.style.opacity = '0';
+                        setTimeout(() => alert.style.display = 'none', 500);
+                    });
+                }, 2000); // Starts fading out after 2 seconds
+            }
+        });
+    </script>
+    <div class="container flex flex-col items-center py-10 mx-auto">
+        <div class="text-center bg-white w-80 rounded-xl">
+            <h1 class="p-3 text-3xl font-medium text-black">Add Friend</h1>
+            <form class="px-3 pt-3" method="POST">
+                {{ form.hidden_tag() }}
+                <input type="text" name="username" class="container px-3 mt-5 border-2 border-gray-300 rounded-lg" placeholder="Friend's username" required>
+                <button class="container px-6 py-2 my-5 text-white bg-[#de5499] rounded-lg">Add Friend</button>
+            </form>
+            <p class="pb-3 text-sm font-light">Looking for people you know? <a class="underline hover:italic" href="/user/search">Find friends</a></p>
+        </div>
+
+        <!-- Friend List Section -->
+        <div class="w-full mt-10">
+            <h2 class="mb-4 text-2xl font-semibold text-center text-black">Your Friends</h2>
+            <div class="flex flex-wrap items-center justify-center">
+                {% if friends %}
+                    {% for friend in friends %}
+                        <div class="flex flex-col items-center p-4 m-2 bg-white rounded-lg shadow-lg">
+                            <p class="py-2 text-lg text-center">{{ friend.username }}</p>
+                            <a href="{{ url_for('friend_dashboard', username=friend.username) }}" class="text-xs font-light underline">view maps</a>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No friends yet. Add some!</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
